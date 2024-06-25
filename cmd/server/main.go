@@ -24,13 +24,19 @@ func main() {
 	clientConns := new(sync.Map)
 
 	for {
-		buf := make([]byte, 1024)
-		_, remoteAddr, err := conn.ReadFromUDP(buf)
+		request := protocol.Request{}
+		serverRequest := protocol.ServerRequest{
+			Request: &request,
+		}
+
+		_, serverRequest.ClientAddr, err = conn.ReadFromUDP(serverRequest.Request.RequestData[:])
 		if err != nil {
 			return
 		}
 
-		fmt.Printf("hello %s", remoteAddr.String())
-		clientConns.Store(remoteAddr.String(), &remoteAddr)
+		message := serverRequest.Request.GetMessage()
+
+		fmt.Printf("Message from (%s): %s", serverRequest.ClientAddr.IP, message.DecodedValue)
+		clientConns.Store(serverRequest.ClientAddr.String(), &serverRequest.ClientAddr)
 	}
 }

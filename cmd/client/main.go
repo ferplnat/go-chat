@@ -18,6 +18,6 @@ func main() {
 		return
 	}
 
-	message := []byte("hello")
-	conn.Write(message)
+	message := protocol.CreateMessageRequest(protocol.CreateMessage("hello server"))
+	conn.Write(message.RequestData[:])
 }

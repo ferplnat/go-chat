@@ -3,29 +3,6 @@ package protocol
 
 import "encoding/binary"
 
-// Request is the base struct for all requests sent to the server
-type Request struct {
-	ProtocolVersion Version
-	RequestType     RequestType
-	RequestData     RequestData
-	Decoded         bool
-}
-
-// RequestData byte array
-type RequestData [1024]byte
-
-// RequestType enum
-type RequestType uint64
-
-// Version enum for Protocol Version
-type Version uint64
-
-// Message is the base struct for messages
-type Message struct {
-	Length       uint64
-	DecodedValue string
-}
-
 // Decode unpacks the byte data into the Request struct
 func (r *Request) Decode() {
 	r.ProtocolVersion = Version(binary.BigEndian.Uint64(r.RequestData[0:8]))

@@ -36,7 +36,7 @@ func main() {
 
 		message := serverRequest.Request.GetMessage()
 
-		fmt.Printf("Message from (%s): %s", serverRequest.ClientAddr.IP, message.DecodedValue)
+		fmt.Printf("Message from (%s): %s\n", serverRequest.ClientAddr.IP, message.DecodedValue)
 		clientConns.Store(serverRequest.ClientAddr.String(), &serverRequest.ClientAddr)
 	}
 }

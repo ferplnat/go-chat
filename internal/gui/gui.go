@@ -17,12 +17,6 @@ type BorderChars struct {
 	CornerBottomRight rune
 }
 
-type FrameOptions struct {
-	BorderChars *BorderChars
-	Width       int
-	Height      int
-}
-
 var defaultBorderChars = BorderChars{
 	Top:    rune(0x2588),
 	Bottom: rune(0x2588),
@@ -35,10 +29,24 @@ var defaultBorderChars = BorderChars{
 	CornerBottomRight: rune(0x2588),
 }
 
-var defaultFrame = FrameOptions{
+func (b *BorderChars) SetDefault() {
+	*b = defaultBorderChars
+}
+
+type FrameOptions struct {
+	BorderChars *BorderChars
+	Width       int
+	Height      int
+}
+
+var defaultFrameOptions = FrameOptions{
 	BorderChars: &defaultBorderChars,
 	Width:       75,
 	Height:      50,
+}
+
+func (f *FrameOptions) SetDefault() {
+	*f = defaultFrameOptions
 }
 
 func isValueSet(x interface{}) bool {
@@ -55,7 +63,7 @@ func (f *FrameOptions) mergeDefaults() {
 }
 
 func CreateFrame(f FrameOptions) string {
-	totalSize := f.Height * (f.Width + 1)
+	totalSize := f.Height * (f.Width + 1) // Add room for line breaks
 	frame := make([]rune, 0, totalSize)
 
 	top := string(f.BorderChars.CornerTopLeft) +

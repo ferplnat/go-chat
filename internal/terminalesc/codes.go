@@ -178,3 +178,8 @@ func ResetTextFormat(format string) CodeSequence {
 
 	return CreateSequenceWithEsc(StringToCodeSequence(str))
 }
+
+type Color int
+
+type colors struct {
+}

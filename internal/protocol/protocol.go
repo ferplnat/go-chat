@@ -5,10 +5,30 @@ import "encoding/binary"
 
 // Decode unpacks the byte data into the Request struct
 func (r *Request) Decode() {
-	r.ProtocolVersion = Version(binary.BigEndian.Uint64(r.RequestData[0:8]))
-	r.RequestType = RequestType(binary.BigEndian.Uint64(r.RequestData[8:16]))
+	r.ProtocolVersion = r.GetProtocolVersion()
+	r.RequestType = r.GetRequestType()
 
 	r.Decoded = true
+}
+
+// GetProtocolVersion returns the Version in the raw RequestData
+func (r *Request) GetProtocolVersion() Version {
+	return Version(binary.BigEndian.Uint16(r.RequestData[0:2]))
+}
+
+// SetProtocolVersion sets the Version in the raw RequestData
+func (r *Request) SetProtocolVersion(version Version) {
+	binary.BigEndian.PutUint16(r.RequestData[0:2], uint16(version))
+}
+
+// GetRequestType returns the RequestType in the raw RequestData
+func (r *Request) GetRequestType() RequestType {
+	return RequestType(binary.BigEndian.Uint16(r.RequestData[2:4]))
+}
+
+// SetRequestType sets the RequestType in the raw RequestData
+func (r *Request) SetRequestType(requestType RequestType) {
+	binary.BigEndian.PutUint16(r.RequestData[2:4], uint16(requestType))
 }
 
 // GetMessage will decode if not already decoded and extract the message into the Message struct
@@ -18,8 +38,8 @@ func (r *Request) GetMessage() Message {
 		r.Decode()
 	}
 
-	message.Length = binary.BigEndian.Uint64(r.RequestData[16:24])
-	message.DecodedValue = string(r.RequestData[24 : 25+message.Length-1])
+	message.Length = binary.BigEndian.Uint64(r.RequestData[4:12])
+	message.DecodedValue = string(r.RequestData[12 : 13+message.Length-1])
 
 	return message
 }
@@ -39,10 +59,10 @@ func CreateMessageRequest(message Message) Request {
 		RequestType:     1,
 	}
 
-	binary.BigEndian.PutUint64(request.RequestData[16:24], message.Length)
+	binary.BigEndian.PutUint64(request.RequestData[4:12], message.Length)
 
 	for i, v := range message.DecodedValue {
-		request.RequestData[24+i] = byte(v)
+		request.RequestData[12+i] = byte(v)
 	}
 
 	return request

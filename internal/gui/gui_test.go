@@ -31,15 +31,13 @@ func TestCreateFrame(t *testing.T) {
 		Width:       10,
 		Height:      10,
 	}
+	t.Log("\n" + mockFrame + "\n" +
+		"Mock:\n" +
+		"Generated:\n" +
+		frameOptions.String())
 
-	testFrame := CreateFrame(frameOptions)
-
-	if mockFrame != testFrame {
-		t.Log("Frames are not equal\n" +
-			"Mock:\n" +
-			mockFrame + "\n" +
-			"Generated:\n" +
-			testFrame)
+	if mockFrame != frameOptions.String() {
+		t.Log("Frames are not equal\n")
 
 		t.Fail()
 	}

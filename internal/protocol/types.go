@@ -2,6 +2,7 @@ package protocol
 
 import "net"
 
+// ServerRequest is a struct to reference a Request and it's origin.
 type ServerRequest struct {
 	Request    *Request
 	ClientAddr *net.UDPAddr
@@ -19,10 +20,10 @@ type Request struct {
 type RequestData [1024]byte
 
 // RequestType enum
-type RequestType uint64
+type RequestType uint16
 
 // Version enum for Protocol Version
-type Version uint64
+type Version uint16
 
 // Message is the base struct for messages
 type Message struct {

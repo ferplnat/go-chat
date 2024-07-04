@@ -67,55 +67,71 @@ func CreateSequenceWithEsc(code []Code) CodeSequence {
 // CursorMoveHome is a Sequence that moves the cursor to 0,0 when printed
 var CursorMoveHome = CreateSequenceWithEsc(StringToCodeSequence("[H"))
 
+// CursorMove is a Sequence that moves the cursor to the given line and column int.
 func CursorMove(line int, column int) CodeSequence {
 	seq := StringToCodeSequence(fmt.Sprintf("[%d;%dH", line, column))
 	return CreateSequenceWithEsc(seq)
 }
 
+// CursorMoveUp is a Sequence that moves the cursor up by int count.
 func CursorMoveUp(count int) CodeSequence {
 	seq := StringToCodeSequence(fmt.Sprintf("[%dA", count))
 	return CreateSequenceWithEsc(seq)
 }
 
+// CursorMoveDown is a Sequence that moves the cursor down by int count.
 func CursorMoveDown(count int) CodeSequence {
 	seq := StringToCodeSequence(fmt.Sprintf("[%dB", count))
 	return CreateSequenceWithEsc(seq)
 }
 
+// CursorMoveRight is a Sequence that moves the cursor right by int count.
 func CursorMoveRight(count int) CodeSequence {
 	seq := StringToCodeSequence(fmt.Sprintf("[%dC", count))
 	return CreateSequenceWithEsc(seq)
 }
 
+// CursorMoveLeft is a Sequence that moves the cursor left by int count.
 func CursorMoveLeft(count int) CodeSequence {
 	seq := StringToCodeSequence(fmt.Sprintf("[%dD", count))
 	return CreateSequenceWithEsc(seq)
 }
 
+// CursorMoveToColumn moves the cursor to the given column int.
 func CursorMoveToColumn(column int) CodeSequence {
 	seq := StringToCodeSequence(fmt.Sprintf("[%dG", column))
 	return CreateSequenceWithEsc(seq)
 }
 
+// EraseInDisplay terminal escape sequence.
 var EraseInDisplay = CreateSequenceWithEsc(StringToCodeSequence("[J"))
 
+// EraseFromCursorToScreenEnd terminal escape sequence.
 var EraseFromCursorToScreenEnd = CreateSequenceWithEsc(StringToCodeSequence("[0J"))
 
+// EraseFromCursorToScreenBeginning terminal escape sequence.
 var EraseFromCursorToScreenBeginning = CreateSequenceWithEsc(StringToCodeSequence("[1J"))
 
+// EraseScreen terminal escape sequence.
 var EraseScreen = CreateSequenceWithEsc(StringToCodeSequence("[2J"))
 
+// EraseSavedLines terminal escape sequence.
 var EraseSavedLines = CreateSequenceWithEsc(StringToCodeSequence("[3J"))
 
+// EraseInLine terminal escape sequence.
 var EraseInLine = CreateSequenceWithEsc(StringToCodeSequence("[K"))
 
+// EraseFromCursorToLineEnd terminal escape sequence.
 var EraseFromCursorToLineEnd = CreateSequenceWithEsc(StringToCodeSequence("[0K"))
 
+// EraseFromCursorToLineBeginning terminal escape sequence.
 var EraseFromCursorToLineBeginning = CreateSequenceWithEsc(StringToCodeSequence("[1K"))
 
+// EraseLine terminal escape sequence.
 var EraseLine = CreateSequenceWithEsc(StringToCodeSequence("[2K"))
 
-func SetTextFormat(format string) CodeSequence {
+// SetTextFormat returns an escape sequence to format superseding text. An error is returned if the format is invalid.
+func SetTextFormat(format string) (CodeSequence, error) {
 	formatStr := "[%dm"
 	var str string
 
@@ -143,12 +159,16 @@ func SetTextFormat(format string) CodeSequence {
 
 	case "Strikethrough", "strikethrough":
 		str = fmt.Sprintf(formatStr, 9)
+
+	default:
+		return nil, &FormatError{}
 	}
 
-	return CreateSequenceWithEsc(StringToCodeSequence(str))
+	return CreateSequenceWithEsc(StringToCodeSequence(str)), nil
 }
 
-func ResetTextFormat(format string) CodeSequence {
+// ResetTextFormat returns an escape sequence that denotes the end of a given format specifier.
+func ResetTextFormat(format string) (CodeSequence, error) {
 	formatStr := "[%dm"
 	var str string
 
@@ -174,12 +194,10 @@ func ResetTextFormat(format string) CodeSequence {
 
 	case "Strikethrough", "strikethrough":
 		str = fmt.Sprintf(formatStr, 29)
+
+	default:
+		return nil, &FormatError{}
 	}
 
-	return CreateSequenceWithEsc(StringToCodeSequence(str))
-}
-
-type Color int
-
-type colors struct {
+	return CreateSequenceWithEsc(StringToCodeSequence(str)), nil
 }

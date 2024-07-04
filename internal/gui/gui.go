@@ -1,10 +1,12 @@
+// Package gui implements terminal gui elements
 package gui
 
 import (
-	"reflect"
+	// "reflect"
 	"strings"
 )
 
+// BorderChars represents the characters used to draw the frame border.
 type BorderChars struct {
 	Top    rune
 	Bottom rune
@@ -29,10 +31,12 @@ var defaultBorderChars = BorderChars{
 	CornerBottomRight: rune(0x2588),
 }
 
+// SetDefault sets all fields to a renderable default value.
 func (b *BorderChars) SetDefault() {
 	*b = defaultBorderChars
 }
 
+// FrameOptions represents the options used to render a "frame" in the console.
 type FrameOptions struct {
 	BorderChars *BorderChars
 	Width       int
@@ -45,24 +49,16 @@ var defaultFrameOptions = FrameOptions{
 	Height:      50,
 }
 
+// SetDefault sets all fields to a reasonable default value.
 func (f *FrameOptions) SetDefault() {
 	*f = defaultFrameOptions
 }
 
-func isValueSet(x interface{}) bool {
-	return reflect.New(reflect.TypeOf(x)) != reflect.ValueOf(x)
-}
+// func isValueSet(x interface{}) bool {
+// 	return reflect.New(reflect.TypeOf(x)) != reflect.ValueOf(x)
+// }
 
-func (b *BorderChars) mergeDefaults() {
-	if isValueSet(b.Top) {
-		b.Top = defaultBorderChars.Top
-	}
-}
-
-func (f *FrameOptions) mergeDefaults() {
-}
-
-func CreateFrame(f FrameOptions) string {
+func (f *FrameOptions) String() string {
 	totalSize := f.Height * (f.Width + 1) // Add room for line breaks
 	frame := make([]rune, 0, totalSize)
 
